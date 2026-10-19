@@ -1,8 +1,35 @@
 
-import React, { useState, useEffect } from 'react'
+
+import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { getPajama, updatePajama } from '../services/PajamasAPI'
+import { calculatePrice } from '../utilities/calcprice'
+import FabricPreview from '../components/FabricPreview'
 import '../App.css'
+
+
+const fabricOptions = [
+    { name: 'Cotton Jersey', price: 16 },
+    { name: 'Silk', price: 64 },
+    { name: 'Cotton Flannel', price: 16 },
+    { name: 'Cotton Poplin', price: 14 }
+]
+
+const sleeveOptions = [
+    { name: 'Long Loose', price: 5 },
+    { name: 'Elbow Loose', price: 3 },
+    { name: 'Long Tight', price: 6 },
+    { name: 'Short Loose', price: 4 }
+]
+
+const pantOptions = [
+    { name: 'Long', price: 8 },
+    { name: 'Knee Length', price: 7 },
+    { name: 'Short Shorts', price: 7 }
+]
+
+const colorOptions = ['White', 'Black', 'Blue', 'Pink', 'Red']
+
 
 const EditPajama = () => {
     const { id } = useParams()
@@ -17,10 +44,9 @@ const EditPajama = () => {
     })
 
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState('')
     const [saving, setSaving] = useState(false)
+    const [error, setError] = useState('')
 
-    // Retrieve the existing pajama set
     useEffect(() => {
         const fetchPajama = async () => {
             try {
@@ -37,7 +63,6 @@ const EditPajama = () => {
         fetchPajama()
     }, [id])
 
-    // Update the field that the user changes
     const handleChange = (e) => {
         const { name, value } = e.target
 
@@ -47,7 +72,35 @@ const EditPajama = () => {
         }))
     }
 
-    // Save the updated pajama set
+    const renderOptions = (field, options) => (
+        <div className="pajama-options">
+            {options.map((option) => {
+                const selected = pajama[field] === option.name
+
+                return (
+                    <label
+                        key={option.name}
+                        className={`pajama-option ${selected ? 'selected' : ''}`}
+                    >
+                        <input
+                            type="radio"
+                            name={field}
+                            value={option.name}
+                            checked={selected}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <span>{option.name}</span>
+                        <strong>${option.price.toFixed(2)}</strong>
+                    </label>
+                )
+            })}
+        </div>
+    )
+
+    const totalPrice = calculatePrice(pajama)
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
@@ -64,7 +117,9 @@ const EditPajama = () => {
         }
     }
 
-    if (loading) return <p>Loading pajama set...</p>
+    if (loading) {
+        return <p>Loading pajama set...</p>
+    }
 
     if (error && !pajama.id) {
         return <p role="alert">{error}</p>
@@ -78,83 +133,68 @@ const EditPajama = () => {
                 <label htmlFor="name">Pajama Set Name</label>
                 <input
                     id="name"
-                    name="name"
                     type="text"
+                    name="name"
                     value={pajama.name}
                     onChange={handleChange}
                     required
                 />
 
-                <label htmlFor="fabric">Fabric Type</label>
-                <select
-                    id="fabric"
-                    name="fabric"
-                    value={pajama.fabric}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Select Fabric</option>
-                    <option value="Cotton Jersey">Cotton Jersey</option>
-                    <option value="Silk">Silk</option>
-                    <option value="Cotton Flannel">Cotton Flannel</option>
-                    <option value="Cotton Poplin">Cotton Poplin</option>
-                </select>
+                <fieldset>
+                    <legend>Fabric (2 yards)</legend>
+                    {renderOptions('fabric', fabricOptions)}
+                </fieldset>
 
-                <label htmlFor="color">Color</label>
-                <select
-                    id="color"
-                    name="color"
-                    value={pajama.color}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Select Color</option>
-                    <option value="White">White</option>
-                    <option value="Black">Black</option>
-                    <option value="Blue">Blue</option>
-                    <option value="Pink">Pink</option>
-                    <option value="Red">Red</option>
-                </select>
+                <fieldset>
+                    <legend>Color</legend>
+                    <div className="pajama-options">
+                        {colorOptions.map((color) => (
+                            <label
+                                key={color}
+                                className={`pajama-option ${pajama.color === color ? 'selected' : ''}`}
+                            >
+                                <input
+                                    type="radio"
+                                    name="color"
+                                    value={color}
+                                    checked={pajama.color === color}
+                                    onChange={handleChange}
+                                    required
+                                />
+                                <span>{color}</span>
+                                <strong>Included</strong>
+                            </label>
+                        ))}
+                    </div>
+                </fieldset>
 
-                <label htmlFor="sleeve_style">Sleeve Style</label>
-                <select
-                    id="sleeve_style"
-                    name="sleeve_style"
-                    value={pajama.sleeve_style}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Select Sleeve Style</option>
-                    <option value="Long Loose">Long Loose</option>
-                    <option value="Elbow Loose">Elbow Loose</option>
-                    <option value="Long Tight">Long Tight</option>
-                    <option value="Short Loose">Short Loose</option>
-                </select>
+                {/* Fabric Color Preview */}
+                <FabricPreview color={pajama.color} />
 
-                <label htmlFor="pant_style">Pant Style</label>
-                <select
-                    id="pant_style"
-                    name="pant_style"
-                    value={pajama.pant_style}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Select Pant Style</option>
-                    <option value="Long">Long</option>
-                    <option value="Knee Length">Knee Length</option>
-                    <option value="Short Shorts">Short Shorts</option>
-                </select>
+                <fieldset>
+                    <legend>Sleeve Style</legend>
+                    {renderOptions('sleeve_style', sleeveOptions)}
+                </fieldset>
+
+                <fieldset>
+                    <legend>Pant Style</legend>
+                    {renderOptions('pant_style', pantOptions)}
+                </fieldset>
+
+                <div className="pajama-total">
+                    <h2>Total Price: ${totalPrice.toFixed(2)}</h2>
+                </div>
 
                 {error && <p role="alert">{error}</p>}
 
                 <button type="submit" disabled={saving}>
                     {saving ? 'Saving...' : 'Save Changes'}
                 </button>
-            </form>
 
-            <Link to={`/custompajamas/${id}`}>
-                Cancel
-            </Link>
+                <Link to={`/custompajamas/${id}`}>
+                    Cancel
+                </Link>
+            </form>
         </div>
     )
 }

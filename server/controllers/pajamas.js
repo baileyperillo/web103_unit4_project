@@ -1,6 +1,7 @@
 
 import { pool } from '../config/database.js'
 import { calculatePrice } from '../utilities/calcprice.js'
+import { validatePajama } from '../utilities/validatePajama.js'
 
 // GET: Retrieve all customized pajama sets
 export const getPajamas = async (req, res) => {
@@ -41,6 +42,12 @@ export const getPajama = async (req, res) => {
 
 export const createPajama = async (req, res) => {
     try {
+        const validationError = validatePajama(req.body)
+
+        if (validationError) {
+            return res.status(400).json({ error: validationError })
+        }
+
         const {
             name,
             fabric,
@@ -124,6 +131,14 @@ export const createPajama = async (req, res) => {
 
 export const updatePajama = async (req, res) => {
     try {
+
+      // Validate the pajama selections
+        const validationError = validatePajama(req.body)
+
+        if (validationError) {
+            return res.status(400).json({ error: validationError })
+        }
+
         const { id } = req.params
 
         const {

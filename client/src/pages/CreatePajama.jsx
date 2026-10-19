@@ -1,120 +1,175 @@
 
+
 import React, { useState } from 'react'
-import '../App.css'
 import { useNavigate } from 'react-router-dom'
 import { createPajama } from '../services/PajamasAPI'
+import { calculatePrice } from '../utilities/calcprice'
+import FabricPreview from '../components/FabricPreview'
+import '../App.css'
+
+const fabricOptions = [
+    { name: 'Cotton Jersey', price: 16 },
+    { name: 'Silk', price: 64 },
+    { name: 'Cotton Flannel', price: 16 },
+    { name: 'Cotton Poplin', price: 14 }
+]
+
+const sleeveOptions = [
+    { name: 'Long Loose', price: 5 },
+    { name: 'Elbow Loose', price: 3 },
+    { name: 'Long Tight', price: 6 },
+    { name: 'Short Loose', price: 4 }
+]
+
+const pantOptions = [
+    { name: 'Long', price: 8 },
+    { name: 'Knee Length', price: 7 },
+    { name: 'Short Shorts', price: 7 }
+]
+
+const colorOptions = ['White', 'Black', 'Blue', 'Pink', 'Red']
 
 const CreatePajama = () => {
     const navigate = useNavigate()
 
-    const [name, setName] = useState('')
-    const [fabric, setFabric] = useState('')
-    const [color, setColor] = useState('')
-    const [sleeveStyle, setSleeveStyle] = useState('')
-    const [pantStyle, setPantStyle] = useState('')
+    const [pajama, setPajama] = useState({
+        name: '',
+        fabric: '',
+        color: '',
+        sleeve_style: '',
+        pant_style: ''
+    })
+
     const [error, setError] = useState('')
+    const [saving, setSaving] = useState(false)
+
+    const handleChange = (e) => {
+        const { name, value } = e.target
+
+        setPajama((prev) => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
+    const totalPrice = calculatePrice(pajama)
+
+    const renderOptions = (field, options) => (
+        <div className="pajama-options">
+            {options.map((option) => {
+                const selected = pajama[field] === option.name
+
+                return (
+                    <label
+                        key={option.name}
+                        className={`pajama-option ${selected ? 'selected' : ''}`}
+                    >
+                        <input
+                            type="radio"
+                            name={field}
+                            value={option.name}
+                            checked={selected}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <span>{option.name}</span>
+                        <strong>${option.price.toFixed(2)}</strong>
+                    </label>
+                )
+            })}
+        </div>
+    )
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
-
-        const pajama = {
-            name,
-            fabric,
-            color,
-            sleeve_style: sleeveStyle,
-            pant_style: pantStyle
-        }
+        setSaving(true)
 
         try {
+            
             await createPajama(pajama)
             navigate('/custompajamas')
         } catch (error) {
-            console.error('Error creating pajamas:', error)
-            setError('Unable to save your pajamas. Please try again.')
+            console.error('Error creating pajama:', error)
+            setError('Unable to create pajama set.')
+        } finally {
+            setSaving(false)
         }
     }
 
     return (
-        <div className = "pajama-container">
-            <h1>Customize Your Pajamas</h1>
+        <div className="pajama-container">
+            <h1>Create Your Pajama Set</h1>
 
             <form onSubmit={handleSubmit}>
                 <label htmlFor="name">Pajama Set Name</label>
                 <input
                     id="name"
                     type="text"
-                    placeholder="Name your pajama set"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    name="name"
+                    value={pajama.name}
+                    onChange={handleChange}
                     required
                 />
 
-                <label htmlFor="fabric">Fabric Type</label>
-                <select
-                    id="fabric"
-                    value={fabric}
-                    onChange={(e) => setFabric(e.target.value)}
-                    required
-                >
-                    <option value="">Select Fabric</option>
-                    <option value="Cotton Jersey">Cotton Jersey</option>
-                    <option value="Silk">Silk</option>
-                    <option value="Cotton Flannel">Cotton Flannel</option>
-                    <option value="Cotton Poplin">Cotton Poplin</option>
-                </select>
+                <fieldset>
+                    <legend>Fabric (2 yards)</legend>
+                    {renderOptions('fabric', fabricOptions)}
+                </fieldset>
 
-                <label htmlFor="color">Color</label>
-                <select
-                    id="color"
-                    value={color}
-                    onChange={(e) => setColor(e.target.value)}
-                    required
-                >
-                    <option value="">Select Color</option>
-                    <option value="White">White</option>
-                    <option value="Black">Black</option>
-                    <option value="Blue">Blue</option>
-                    <option value="Pink">Pink</option>
-                    <option value="Red">Red</option>
-                </select>
+                <fieldset>
+                    <legend>Color</legend>
+                    <div className="pajama-options">
+                        {colorOptions.map((color) => (
+                            <label
+                                key={color}
+                                className={`pajama-option ${pajama.color === color ? 'selected' : ''}`}
+                            >
+                                <input
+                                    type="radio"
+                                    name="color"
+                                    value={color}
+                                    checked={pajama.color === color}
+                                    onChange={handleChange}
+                                    required
+                                />
+                                <span>{color}</span>
+                                <strong>Included</strong>
+                            </label>
+                        ))}
+                    </div>
+                </fieldset>
 
-                <label htmlFor="sleeveStyle">Sleeve Style</label>
-                <select
-                    id="sleeveStyle"
-                    value={sleeveStyle}
-                    onChange={(e) => setSleeveStyle(e.target.value)}
-                    required
-                >
-                    <option value="">Select Sleeve Style</option>
-                    <option value="Long Loose">Long Loose</option>
-                    <option value="Elbow Loose">Elbow Loose</option>
-                    <option value="Long Tight">Long Tight</option>
-                    <option value="Short Loose">Short Loose</option>
-                </select>
+                {/* Display the selected fabric color */}
+                <FabricPreview color={pajama.color} />
 
-                <label htmlFor="pantStyle">Pant Style</label>
-                <select
-                    id="pantStyle"
-                    value={pantStyle}
-                    onChange={(e) => setPantStyle(e.target.value)}
-                    required
-                >
-                    <option value="">Select Pant Style</option>
-                    <option value="Long">Long</option>
-                    <option value="Knee Length">Knee Length</option>
-                    <option value="Short Shorts">Short Shorts</option>
-                </select>
+                <fieldset>
+                    <legend>Sleeve Style</legend>
+                    {renderOptions('sleeve_style', sleeveOptions)}
+                </fieldset>
+
+                <fieldset>
+                    <legend>Pant Style</legend>
+                    {renderOptions('pant_style', pantOptions)}
+                </fieldset>
+
+                <div className="pajama-total">
+                    <h2>Total Price: ${totalPrice.toFixed(2)}</h2>
+                </div>
 
                 {error && <p role="alert">{error}</p>}
 
-                <button type="submit">Create Pajama Set</button>
+                <button type="submit" disabled={saving}>
+                    {saving ? 'Saving...' : 'Create Pajama Set'}
+                </button>
             </form>
         </div>
     )
 }
 
 export default CreatePajama
+
 
 
 

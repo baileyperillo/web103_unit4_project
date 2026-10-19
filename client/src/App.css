@@ -30,3 +30,190 @@
 .pajama-container label {
     color: black;
 }
+
+
+
+
+
+/* Pajama customization form */
+
+.pajama-container {
+    color: black;
+}
+
+.pajama-container label,
+.pajama-container legend {
+    color: black;
+}
+
+.pajama-container fieldset {
+    border: none;
+    padding: 0;
+    margin: 24px 0;
+}
+
+.pajama-container legend {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+}
+
+/* Display customization options side by side */
+
+.pajama-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.pajama-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.pajama-option input[type="radio"] {
+    width: auto;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.pajama-option span {
+    flex: 1;
+}
+
+.pajama-option strong {
+    color: #333;
+    white-space: nowrap;
+}
+
+/* Highlight the selected option */
+
+.pajama-option.selected {
+    border-color: #7b4f9d;
+    background-color: #f3eafb;
+}
+
+/* Total price display */
+
+.pajama-total {
+    margin: 24px 0;
+    padding: 16px;
+    background-color: #f3eafb;
+    border-radius: 10px;
+}
+
+.pajama-total h2 {
+    margin: 0;
+    color: #333;
+}
+
+/* Mobile layout */
+
+@media (max-width: 600px) {
+    .pajama-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Arrange options in two columns */
+.pajama-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
+}
+
+/* Individual option card */
+.pajama-container .pajama-option {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+
+    padding: 16px;
+    margin: 0;
+    min-width: 0;
+
+    background-color: white;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+/* Keep radio buttons a consistent size */
+.pajama-container .pajama-option input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    flex: 0 0 18px;
+
+    margin: 0;
+    padding: 0;
+    accent-color: #7b4f9d;
+}
+
+/* Option name */
+.pajama-container .pajama-option span {
+    flex: 1;
+    min-width: 0;
+    color: black;
+}
+
+/* Price */
+.pajama-container .pajama-option strong {
+    margin-left: auto;
+    color: #333;
+    white-space: nowrap;
+}
+
+/* Selected option */
+.pajama-container .pajama-option.selected {
+    border-color: #7b4f9d;
+    background-color: #f3eafb;
+}
+
+/* Smaller screens */
+@media (max-width: 650px) {
+    .pajama-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+.fabric-image {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+
+.pajama-card {
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+}
+
+.pajama-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.pajama-actions button {
+    width: auto;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+}

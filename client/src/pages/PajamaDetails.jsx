@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { getPajama, deletePajama } from '../services/PajamasAPI'
 import '../App.css'
+import FabricPreview from '../components/FabricPreview'
 
 const PajamaDetails = () => {
     const { id } = useParams()
@@ -52,6 +53,7 @@ const PajamaDetails = () => {
         <div className="pajama-container">
             <h1>{pajama.name}</h1>
 
+            <FabricPreview color={pajama.color} />
             <p>Fabric: {pajama.fabric}</p>
             <p>Color: {pajama.color}</p>
             <p>Sleeve Style: {pajama.sleeve_style}</p>
