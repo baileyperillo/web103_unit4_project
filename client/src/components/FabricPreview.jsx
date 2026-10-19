@@ -14,7 +14,7 @@ const FabricPreview = ({ color }) => {
 
     return (
         <div className="fabric-preview">
-            <h2>Fabric Color Preview</h2>
+            <h3>Fabric Color Preview</h3>
 
             {image ? (
                 <img
