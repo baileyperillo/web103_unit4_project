@@ -3,7 +3,7 @@
 
 Submitted by: **Bailey Perillo**
 
-About this web app: You will be able to customize your own pajamas. You can click create and choose from through the options, like color, fabric type and length of the sleeves and pants. You can then edit or delete if it's in your cart
+About this web app: You will be able to customize your own pajamas. You can click create and choose from through the options, like color, fabric type and length of the sleeves and pants. Every selection will add to the price before you add it to your cart. You can then edit your selections or delete the set all together. There includes a picture of your chosen color fabric.
 
 Time spent: 48 hours
 
