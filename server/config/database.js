@@ -1,4 +1,11 @@
 import pg from 'pg'
+import dotenv from 'dotenv'
+
+dotenv.config()
+console.log('Database host:', process.env.PGHOST)
+console.log('Database name:', process.env.PGDATABASE)
+console.log('Database port:', process.env.PGPORT)
+
 
 const config = {
     user: process.env.PGUSER,
@@ -7,7 +14,7 @@ const config = {
     port: process.env.PGPORT,
     database: process.env.PGDATABASE,
     ssl: {
-      rejectUnauthorized: false
+        rejectUnauthorized: false
     }
 }
 

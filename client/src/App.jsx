@@ -1,29 +1,29 @@
 import React from 'react'
 import { useRoutes } from 'react-router-dom'
 import Navigation from './components/Navigation'
-import ViewCars from './pages/ViewCars'
-import EditCar from './pages/EditCar'
-import CreateCar from './pages/CreateCar'
-import CarDetails from './pages/CarDetails'
+import ViewPajamas from './pages/ViewPajamas'
+import EditCar from './pages/EditPajama'
+import CreatePajama from './pages/CreatePajama'
+import PajamaDetails from './pages/PajamaDetails'
 import './App.css'
 
 const App = () => {
   let element = useRoutes([
     {
       path: '/',
-      element: <CreateCar title='BOLT BUCKET | Customize' />
+      element: <CreatePajama title='Pajama Customizer | Create Pajamas' />
     },
     {
-      path:'/customcars',
-      element: <ViewCars title='BOLT BUCKET | Custom Cars' />
+      path:'/custompajamas',
+      element: <ViewPajamas title='Pajama Customizer | Custom Pajamas' />
     },
     {
-      path: '/customcars/:id',
-      element: <CarDetails title='BOLT BUCKET | View' />
+      path: '/custompajamas/:id',
+      element: <PajamaDetails title='Pajama Customizer | View' />
     },
     {
       path: '/edit/:id',
-      element: <EditCar title='BOLT BUCKET | Edit' />
+      element: <EditCar title='Pajama Customizer | Edit' />
     }
   ])
 
